@@ -6,6 +6,12 @@ image:
   repository: qpowjohn/hello-world # 您的 Docker 映像名稱
   pullPolicy: IfNotPresent # 映像拉取策略，生產環境建議 Always 或 IfNotPresent
 
+autoscaling:
+  enabled: false # 預設為 false，表示不啟用自動擴展
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
 service:
   type: ClusterIP # 預設服務類型
   port: 80 # 服務暴露的埠號
