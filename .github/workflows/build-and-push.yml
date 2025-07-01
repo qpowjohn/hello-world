@@ -23,9 +23,6 @@ jobs:
       - name: 檢出程式碼
         uses: actions/checkout@v4
 
-      - name: Official SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5.2.0
-
       # 步驟 2: 設定 Go 環境
       # 使用 actions/setup-go@v5 來設定 Go 開發環境。
       - name: 設定 Go 環境
