@@ -1,0 +1,16 @@
+# 覆寫 production 環境的設定
+replicaCount: 3 # 生產環境通常需要更多副本
+
+image:
+  pullPolicy: Always # 生產環境建議 Always 或 IfNotPresent
+
+ingress:
+  enabled: true
+  hosts:
+    - host: go-app.yourdomain.com # 替換為您的生產環境域名
+      paths:
+        - path: /
+          pathType: Prefix
+
+envVars:
+  ENV: "production" # 設定 ENV 為 production
