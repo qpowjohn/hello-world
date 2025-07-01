@@ -57,7 +57,7 @@ jobs:
           context: ./app # Dockerfile 和應用程式程式碼的上下文路徑
           push: true # 設定為 true 以推送到 Docker Hub
           tags: |
-            qpowjohn/hello-world:latest # 推送的標籤：最新版本
-            qpowjohn/hello-world:${{ github.sha }} # 推送的標籤：使用 Git Commit SHA 作為版本號
+            qpowjohn/hello-world:latest
+            qpowjohn/hello-world:${{ github.sha }}
           # cache-from: type=gha # 可選：啟用 GitHub Actions 緩存以加速建置
           # cache-to: type=gha,mode=max # 可選：啟用 GitHub Actions 緩存以加速建置
