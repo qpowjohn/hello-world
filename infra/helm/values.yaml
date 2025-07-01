@@ -42,3 +42,7 @@ readinessProbe:
   timeoutSeconds: 3
   failureThreshold: 3
   successThreshold: 1
+
+serviceAccount:
+  create: true # 預設為 true，表示為此應用程式創建一個新的 Service Account
+  name: ""
