@@ -1,0 +1,66 @@
+   # GitHub Actions 工作流程名稱
+name: Go App Build and Push to Docker Hub
+
+# 定義觸發工作流程的事件
+on:
+  pull_request:
+    types: [closed] # 當拉取請求被關閉時觸發
+    branches:
+      - main # 僅在目標分支為 master 時觸發
+    # 確保只有在 PR 合併時才執行
+    if: github.event.pull_request.merged == true
+
+# 定義工作流程中的任務
+jobs:
+  build-and-push:
+    # 任務執行的環境
+    runs-on: ubuntu-latest
+
+    # 任務步驟
+    steps:
+      # 步驟 1: 檢查程式碼
+      # 使用 actions/checkout@v4 來檢出您的儲存庫程式碼。
+      - name: 檢出程式碼
+        uses: actions/checkout@v4
+
+      - name: Official SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5.2.0
+
+      # 步驟 2: 設定 Go 環境
+      # 使用 actions/setup-go@v5 來設定 Go 開發環境。
+      - name: 設定 Go 環境
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24' # 指定 Go 版本，您可以根據需要更改
+
+      # 步驟 3: 編譯 Go 應用程式
+      # 進入 app 目錄並編譯 Go 應用程式。
+      # 這裡假設您的主程式檔案是 main.go，並且編譯後的執行檔名為 hello-world。
+      - name: 編譯 Go 應用程式
+        run: |
+          cd app
+          go mod tidy # 清理並下載依賴
+          go build -o hello-world . # 編譯應用程式，輸出為 hello-world
+
+      # 步驟 4: 登入 Docker Hub
+      # 使用 docker/login-action@v3 動作來登入 Docker Hub。
+      # 登入憑證從 GitHub Secrets 中獲取。
+      - name: 登入 Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }} # 從 GitHub Secret 獲取 Docker Hub 用戶名
+          password: ${{ secrets.DOCKER_PASSWORD }} # 從 GitHub Secret 獲取 Docker Hub 密碼
+
+      # 步驟 5: 建置並推送 Docker 映像
+      # 使用 docker/build-push-action@v5 動作來建置 Docker 映像並推送到 Docker Hub。
+      # context 設置為 './app'，表示 Dockerfile 和應用程式程式碼都在 app 目錄下。
+      - name: 建置並推送 Docker 映像
+        uses: docker/build-push-action@v5
+        with:
+          context: ./app # Dockerfile 和應用程式程式碼的上下文路徑
+          push: true # 設定為 true 以推送到 Docker Hub
+          tags: |
+            qpowjohn/hello-world:latest # 推送的標籤：最新版本
+            qpowjohn/hello-world:${{ github.sha }} # 推送的標籤：使用 Git Commit SHA 作為版本號
+          # cache-from: type=gha # 可選：啟用 GitHub Actions 緩存以加速建置
+          # cache-to: type=gha,mode=max # 可選：啟用 GitHub Actions 緩存以加速建置
