@@ -49,3 +49,14 @@ Create the name of the chart.
 {{- define "my-go-app.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "my-go-app.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "my-go-app.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
