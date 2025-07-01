@@ -1,0 +1,38 @@
+# 預設值，其他環境的 values.yaml 會覆蓋這裡的設定
+
+replicaCount: 1 # 預設副本數
+
+image:
+  repository: qpowjohn/hello-world # 您的 Docker 映像名稱
+  pullPolicy: IfNotPresent # 映像拉取策略，生產環境建議 Always 或 IfNotPresent
+
+service:
+  type: ClusterIP # 預設服務類型
+  port: 80 # 服務暴露的埠號
+
+ingress:
+  enabled: false # 預設不啟用 Ingress
+  className: nginx # 如果您的集群有 Ingress Controller，例如 nginx
+  annotations: {} # 額外的 Ingress 註解
+  hosts:
+    - host: chart-example.local # 預設 Ingress host
+      paths:
+        - path: /
+          pathType: Prefix
+
+# 環境變數設定，ENV 將從 ConfigMap 導入
+envVars:
+  PORT: "8080" # 應用程式監聽的埠號
+
+# ConfigMap 名稱，用於儲存 ENV
+configMapName: my-go-app-config # ConfigMap 的名稱，建議保持一致
+
+# Readiness Probe 設定
+readinessProbe:
+  path: /ping
+  port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+  successThreshold: 1

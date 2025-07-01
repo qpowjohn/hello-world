@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-go-app-development # 應用程式名稱，通常包含環境
+  namespace: argocd # Argo CD 所在的 namespace
+spec:
+  project: default # 您在 Argo CD 中設定的 project 名稱
+
+  source:
+    repoURL: https://github.com/qpowjohn/hello-world.git # 替換為您的 Git 倉庫 URL
+    targetRevision: HEAD # 通常是 main 或 master 分支
+    path: infra/helm # 您的 Helm Chart 在倉庫中的路徑
+
+    helm:
+      valueFiles:
+        - environments/development.yaml # 這裡指定環境的 values.yaml
+      # 您可以在這裡指定更多 Helm values，例如：
+      # parameters:
+      #   - name: "image.tag"
+      #     value: "your-image-tag" # 或者從 GitHub Actions 的 SHA 獲取
+
+  destination:
+    server: https://172.24.40.120:8443 # 通常是集群內部 Kubernetes API Server
+    namespace: go-app-dev # 應用程式部署到的目標 namespace (您需要先創建此 namespace)
+
+  syncPolicy:
+    automated:
+      prune: true # 允許 Argo CD 刪除不再存在於 Git 中的資源
+      selfHeal: true # 自動將集群狀態恢復到 Git 定義的狀態
+    syncOptions:
+      - CreateNamespace=true # 如果目標 namespace 不存在則創建它

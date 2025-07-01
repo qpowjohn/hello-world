@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "my-go-app.fullname" . }}-config
+  labels:
+    {{- include "my-go-app.labels" . | nindent 4 }}
+data:
+  # 從 values.yaml 的 envVars.ENV 中獲取 ENV 變數
+  ENV: {{ .Values.envVars.ENV | quote }}
+  PORT: {{ .Values.envVars.PORT | quote }} # 應用程式內部監聽的埠號

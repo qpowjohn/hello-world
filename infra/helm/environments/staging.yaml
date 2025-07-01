@@ -1,0 +1,13 @@
+# 覆寫 staging 環境的設定
+replicaCount: 2
+
+ingress:
+  enabled: true
+  hosts:
+    - host: go-app-staging.yourdomain.com # 替換為您的 staging 環境域名
+      paths:
+        - path: /
+          pathType: Prefix
+
+envVars:
+  ENV: "staging" # 設定 ENV 為 staging

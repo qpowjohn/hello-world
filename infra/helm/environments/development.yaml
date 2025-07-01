@@ -1,0 +1,13 @@
+# 覆寫 development 環境的設定
+replicaCount: 1
+
+ingress:
+  enabled: true
+  hosts:
+    - host: go-app-dev.yourdomain.com # 替換為您的開發環境域名
+      paths:
+        - path: /
+          pathType: Prefix
+
+envVars:
+  ENV: "development" # 設定 ENV 為 development
