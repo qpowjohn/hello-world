@@ -11,3 +11,6 @@ ingress:
 
 envVars:
   ENV: "staging" # 設定 ENV 為 staging
+
+image:
+  tag: bf50d3133e5691660c8f19eb3971f371156e0f9e
